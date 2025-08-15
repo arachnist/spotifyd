@@ -137,6 +137,10 @@ pub(crate) fn spawn_program_on_event(
             play_request_id,
             track_id,
             position_ms,
+        } | PlayerEvent::PositionChanged {
+            play_request_id,
+            track_id,
+            position_ms,
         } => {
             env.insert("PLAYER_EVENT", "seeked".to_string());
             env.insert("TRACK_ID", track_id.to_base62().unwrap());
@@ -179,9 +183,9 @@ pub(crate) fn spawn_program_on_event(
             env.insert("PLAYER_EVENT", "shuffle_changed".to_string());
             env.insert("SHUFFLE", shuffle.to_string());
         }
-        PlayerEvent::RepeatChanged { repeat } => {
+        PlayerEvent::RepeatChanged { track, .. } => {
             env.insert("PLAYER_EVENT", "repeat_changed".to_string());
-            let val = match repeat {
+            let val = match track {
                 true => "all",
                 false => "none",
             }
